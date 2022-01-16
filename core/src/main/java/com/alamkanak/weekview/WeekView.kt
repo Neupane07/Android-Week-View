@@ -177,7 +177,7 @@ class WeekView @JvmOverloads constructor(
         val daysScrolled = viewState.currentOrigin.x / viewState.dayWidth
         val delta = daysScrolled.roundToInt() * (-1)
 
-        val firstVisibleDate = if (viewState.isLtr) {
+        var firstVisibleDate = if (viewState.isLtr) {
             today() + Days(delta)
         } else {
             today() - Days(delta)
@@ -1168,8 +1168,11 @@ class WeekView @JvmOverloads constructor(
      * Returns the first visible date.
      */
     @PublicApi
-    val firstVisibleDate: Calendar
+    var firstVisibleDate: Calendar
         get() = viewState.dateRange.first().copy()
+        set(value) {
+            viewState.firstVisibleDate = value
+        }
 
     /**
      * Returns the last visible date.
@@ -1644,7 +1647,7 @@ class WeekView @JvmOverloads constructor(
         }
 
         internal fun dispatchLoadRequest() {
-            val firstVisibleDate = weekView?.viewState?.firstVisibleDate ?: return
+            var firstVisibleDate = weekView?.viewState?.firstVisibleDate ?: return
             val fetchRange = FetchRange.create(firstVisibleDate)
             if (fetchRange in eventsCache) {
                 return
